@@ -45,26 +45,20 @@ public class UserService {
     }
 
     public AuthResponse login(LoginRequest request) {
-    System.out.println("Step 1 - authenticating");
     authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(
                     request.getEmail(), request.getPassword()));
 
-    System.out.println("Step 2 - loading user details");
     UserDetails userDetails = userDetailsService
             .loadUserByUsername(request.getEmail());
 
-    System.out.println("Step 3 - finding user in db");
     User user = userRepository.findByEmail(request.getEmail())
             .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
-    System.out.println("Step 4 - generating access token");
     String accessToken = jwtService.generateToken(userDetails);
 
-    System.out.println("Step 5 - creating refresh token");
     RefreshToken refreshToken = refreshTokenService.createRefreshToken(user);
 
-    System.out.println("Step 6 - building response");
         AuthResponse response = AuthResponse.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken.getToken())
@@ -73,7 +67,6 @@ public class UserService {
                 .role(user.getRole().name())
                 .tokenType("Bearer")
                 .build();
-        System.out.println("Step 7 - response built: " + response.toString());
         return response;
         
 }
