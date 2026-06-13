@@ -52,7 +52,13 @@ public class AdminController {
             @RequestParam String role) {
         User user = userRepository.findById(id)
         .orElseThrow(() -> new ResourceNotFoundException("User", id));
-        user.setRole(User.Role.valueOf(role.toUpperCase()));
+        try {
+           user.setRole(User.Role.valueOf(role.toUpperCase()));
+        }
+        catch (IllegalArgumentException e) {
+            throw new InvalidRequestException(
+            "Role must be ADMIN or USER");
+        }
         userRepository.save(user);
         return ResponseEntity.ok("Role updated to " + role.toUpperCase());
     }
