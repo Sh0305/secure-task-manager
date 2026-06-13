@@ -606,7 +606,7 @@ Authorization: Bearer {{userToken}}
   "title": "Urgent task due tomorrow",
   "description": "This should be escalated to HIGH",
   "priority": "LOW",
-  "deadline": "2026-04-24"
+  "deadline": "2030-04-24"
 }
 
 ### =============================================
