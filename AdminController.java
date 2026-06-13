@@ -31,7 +31,7 @@ public class AdminController {
 
     // See all registered users
     @GetMapping("/users")
-    public ResponseEntity<List<User>> getAllUsers() {
+    public ResponseEntity<List<UserResponse>> getAllUsers() {
         return ResponseEntity.ok(userRepository.findAll());
     }
 
