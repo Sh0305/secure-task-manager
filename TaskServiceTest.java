@@ -1,16 +1,13 @@
-package com.securetask.taskmanager.service;
+package com.securetask.taskmanager;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-import org.junit.jupiter.api.AfterEach;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import static org.mockito.ArgumentMatchers.any;
@@ -22,9 +19,6 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.securetask.taskmanager.dto.TaskRequest;
 import com.securetask.taskmanager.dto.TaskResponse;
@@ -33,6 +27,8 @@ import com.securetask.taskmanager.model.Task;
 import com.securetask.taskmanager.model.User;
 import com.securetask.taskmanager.repository.TaskRepository;
 import com.securetask.taskmanager.repository.UserRepository;
+import com.securetask.taskmanager.service.AuditService;
+import com.securetask.taskmanager.service.TaskService;
 
 @ExtendWith(MockitoExtension.class)
 class TaskServiceTest {
@@ -53,44 +49,7 @@ class TaskServiceTest {
     private Task sampleTask;
     private TaskRequest taskRequest;
 
-    @BeforeEach
-    void setUp() {
-        currentUser = User.builder()
-                .id(1L)
-                .name("Priya Sharma")
-                .email("priya@test.com")
-                .role(User.Role.USER)
-                .build();
 
-        UsernamePasswordAuthenticationToken auth =
-                new UsernamePasswordAuthenticationToken(
-                        "priya@test.com",
-                        null,
-                        List.of(new SimpleGrantedAuthority("ROLE_USER"))
-                );
-        SecurityContextHolder.getContext().setAuthentication(auth);
-
-        sampleTask = Task.builder()
-                .id(1L)
-                .title("Build the backend")
-                .description("Finish all endpoints")
-                .status(Task.Status.PENDING)
-                .priority(Task.Priority.HIGH)
-                .deadline(LocalDate.now().plusDays(30))
-                .createdBy(currentUser)
-                .build();
-
-        taskRequest = new TaskRequest();
-        taskRequest.setTitle("Build the backend");
-        taskRequest.setDescription("Finish all endpoints");
-        taskRequest.setPriority("HIGH");
-        taskRequest.setDeadline(LocalDate.now().plusDays(30));
-    }
-
-    @AfterEach
-    void tearDown() {
-        SecurityContextHolder.clearContext();
-    }
 
     @Test
     void createTask_ShouldReturnTaskResponse_WhenValidRequest() {
